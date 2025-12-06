@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+
+# Environment
+.env
+.venv
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Logs et données temporaires
+logs/
+*.log
+school_assistant/data/notes_*.txt
+school_assistant/data/reglement_raw.txt
+
+# Bases vectorielles (à reconstruire)
+school_assistant/data/faiss_index/
+school_assistant/data/chroma_db/
+
+# Auth (à reconfigurer)
+school_assistant/auth/state/auth.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Tests
+test_*.py
+*_test.py
+tests/
+
+# Documentation
+*.md
+!README.md
+
+# Divers
+*.bak
+*.tmp
+scan_*.html

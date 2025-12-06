@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  school-assistant:
+    build: .
+    container_name: school-assistant-apm
+    restart: unless-stopped
+    
+    # Variables d'environnement (charger depuis .env)
+    env_file:
+      - .env
+    
+    # Ports
+    ports:
+      - "8501:8501"  # Streamlit
+    
+    # Volumes pour la persistance
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./school_assistant/data:/app/school_assistant/data
+      - ./school_assistant/auth/state:/app/school_assistant/auth/state
+      - ./Réglements:/app/Réglements:ro  # Read-only
+    
+    # Commande (peut être surchargée)
+    command: streamlit run school_assistant/interface/app.py --server.address 0.0.0.0
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Service optionnel : Vérification quotidienne
+  daily-checker:
+    build: .
+    container_name: school-assistant-checker
+    restart: unless-stopped
+    
+    env_file:
+      - .env
+    
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./school_assistant/data:/app/school_assistant/data
+      - ./school_assistant/auth/state:/app/school_assistant/auth/state
+    
+    # Exécution toutes les heures (à ajuster selon besoins)
+    command: >
+      bash -c "
+        while true; do
+          python3 school_assistant/daily_check.py
+          sleep 3600
+        done
+      "
+    
+    depends_on:
+      - school-assistant
+
+  # Service optionnel : Ollama (LLM local)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-llm
+    restart: unless-stopped
+    
+    ports:
+      - "11434:11434"
+    
+    volumes:
+      - ollama-data:/root/.ollama
+    
+    # Commande pour télécharger Mistral au démarrage
+    command: >
+      bash -c "
+        ollama serve &
+        sleep 10
+        ollama pull mistral
+        wait
+      "
+
+volumes:
+  ollama-data:
+
+networks:
+  default:
+    name: school-assistant-network

@@ -1,0 +1,157 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   ⚠️  PROBLÈME DÉTECTÉ : Vous utilisez encore votre clé OpenAI épuisée      ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+🔍 DIAGNOSTIC
+═══════════════════════════════════════════════════════════════════════════════
+
+Clé détectée : sk-proj-XXXXXXXXXXXXXXXX (masquée pour sécurité)
+Type         : OpenAI (épuisée)
+Statut       : ❌ Error 401 - Authentication Fails
+
+➜ Il faut remplacer cette clé par une clé DeepSeek (gratuite)
+
+
+🚀 SOLUTION ULTRA-RAPIDE (5 MINUTES)
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ OPTION 1 : Script Automatique (★ RECOMMANDÉ)                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Lancez simplement :
+
+    ./get_deepseek_key.sh
+
+Le script va :
+1. Ouvrir la page DeepSeek dans votre navigateur
+2. Vous guider pour obtenir la clé
+3. Configurer automatiquement votre .env
+4. Tester la connexion
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ OPTION 2 : Configuration Manuelle (3 étapes)                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ÉTAPE 1 : Obtenir la clé DeepSeek
+─────────────────────────────────
+
+1. Ouvrez votre navigateur
+2. Allez sur : https://platform.deepseek.com/api_keys
+3. Cliquez "Sign Up" → Inscrivez-vous (ou "Sign in with Google")
+4. Une fois connecté :
+   - Cliquez sur votre profil (coin supérieur droit)
+   - Allez dans "API Keys"
+   - Cliquez "Create API Key"
+   - Nommez : "AMP_Chatbot"
+5. ⚠️  COPIEZ LA CLÉ IMMÉDIATEMENT (elle ne sera plus visible) !
+   Format : sk-xxxxxxxxxxxxxxxx
+
+
+ÉTAPE 2 : Mettre à jour votre .env
+───────────────────────────────────
+
+Méthode A - Terminal (Rapide) :
+
+    cd /home/tahar/project/AMP
+    nano .env
+
+    # Remplacez la ligne OPENAI_API_KEY par :
+    OPENAI_API_KEY=sk-votre-nouvelle-cle-deepseek
+
+    # Sauvegardez : Ctrl+O puis Enter, puis Ctrl+X
+
+
+Méthode B - Explorateur (Visual) :
+
+    1. Ouvrez : \\wsl.localhost\Ubuntu\home\tahar\project\AMP
+    2. Double-cliquez sur .env
+    3. Remplacez la ligne OPENAI_API_KEY=...
+    4. Sauvegardez
+
+
+ÉTAPE 3 : Tester
+────────────────
+
+    python3 test_deepseek.py
+
+Si vous voyez "✅ SUCCÈS !", c'est bon ! 🎉
+
+
+📊 RAPPEL : POURQUOI DEEPSEEK ?
+═══════════════════════════════════════════════════════════════════════════════
+
+                OpenAI                      DeepSeek
+                ───────                     ────────
+Prix            $2 / 1M tokens              $0.14 / 1M tokens  (70x moins cher)
+Quota           Épuisé ❌                   Généreux ✅
+Français        Bon                         Excellent ✅
+Vitesse         Rapide                      Très rapide ✅
+Compatible      Natif                       API Compatible ✅
+
+
+💡 EXEMPLE CONCRET
+═══════════════════════════════════════════════════════════════════════════════
+
+Pour 1000 questions à votre chatbot :
+• OpenAI  : ~5€
+• DeepSeek : ~0.20€
+
+→ Économie : 4.80€ (96% moins cher) 💰
+
+
+🔧 DÉPANNAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ "Je ne trouve pas la page API Keys sur DeepSeek"
+   → URL directe : https://platform.deepseek.com/api_keys
+
+❌ "Le script get_deepseek_key.sh ne fonctionne pas"
+   → chmod +x get_deepseek_key.sh
+   → Puis relancez : ./get_deepseek_key.sh
+
+❌ "J'ai oublié de copier ma clé DeepSeek"
+   → Retournez sur https://platform.deepseek.com/api_keys
+   → Supprimez l'ancienne clé
+   → Créez-en une nouvelle
+
+❌ "Le test échoue toujours"
+   → Vérifiez que vous avez bien collé la NOUVELLE clé dans .env
+   → Vérifiez votre connexion internet
+   → Attendez 1-2 minutes (propagation de la clé)
+
+
+📞 BESOIN D'AIDE ?
+═══════════════════════════════════════════════════════════════════════════════
+
+Consultez le guide complet :
+    cat GUIDE_DEEPSEEK.md
+
+Ou relancez la configuration guidée :
+    python3 setup_complete.py
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   💡 LA SOLUTION LA PLUS RAPIDE : ./get_deepseek_key.sh                     ║
+║                                                                              ║
+║   Ce script fait tout automatiquement ! ✨                                   ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════
+APRÈS LA CONFIGURATION :
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Testez avec une vraie question :
+   cd school_assistant/chatbot
+   python3 bot.py "Comment justifier une absence?"
+
+2. Lancez l'interface web :
+   streamlit run school_assistant/interface/app.py
+
+3. Amusez-vous ! 🚀

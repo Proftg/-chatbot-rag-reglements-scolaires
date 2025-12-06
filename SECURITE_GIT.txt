@@ -1,0 +1,254 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   🔒 GUIDE DE SÉCURITÉ : Nettoyage de l'Historique Git                     ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+⚠️  IMPORTANT : SI VOUS AVEZ DÉJÀ COMMITÉ DES SECRETS PAR LE PASSÉ
+═══════════════════════════════════════════════════════════════════════════════
+
+Les fichiers dans .gitignore ne sont PAS supprimés de l'historique Git.
+Si vous avez commité .env ou d'autres secrets par le passé, ils sont toujours
+accessibles dans l'historique, même si vous les supprimez maintenant.
+
+
+🔍 VÉRIFIER SI VOUS AVEZ COMMITÉ DES SECRETS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Vérifier si .env a été commité dans le passé :
+
+    git log --all --full-history -- .env
+
+    Si vous voyez des commits → NETTOYAGE NÉCESSAIRE ⚠️
+    Si vide → Tout va bien ✅
+
+
+2. Rechercher les clés API dans tout l'historique :
+
+    git log --all -S "sk-proj-" --source --all
+    git log --all -S "gsk_" --source --all
+    git log --all -S "OPENAI_API_KEY" --source --all
+
+    Si vous trouvez des résultats → NETTOYAGE NÉCESSAIRE ⚠️
+
+
+🧹 MÉTHODE 1 : Réinitialisation Complète (Recommandé si aucun historique important)
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  ATTENTION : Ceci supprime TOUT l'historique Git
+
+cd /home/tahar/project/AMP
+
+# 1. Sauvegarder le code actuel
+cp -r . ../AMP_backup
+
+# 2. Supprimer l'historique Git
+rm -rf .git
+
+# 3. Réinitialiser Git proprement
+git init
+git add .
+git commit -m "🎓 Initial commit: Chatbot RAG (historique nettoyé)"
+
+# 4. Pousser sur GitHub
+git remote add origin https://github.com/VOTRE_USERNAME/chatbot-rag-reglements.git
+git branch -M main
+git push -u origin main --force
+
+✅ Historique propre, pas de secrets
+
+
+🔧 MÉTHODE 2 : Nettoyage avec BFG Repo-Cleaner (Si vous voulez garder l'historique)
+═══════════════════════════════════════════════════════════════════════════════
+
+BFG est un outil qui supprime les fichiers sensibles de TOUT l'historique Git.
+
+1. Installer BFG :
+
+    sudo apt install default-jre
+    wget https://repo1.maven.org/maven2/com/madgag/bfg/1.14.0/bfg-1.14.0.jar
+    alias bfg='java -jar bfg-1.14.0.jar'
+
+
+2. Créer un fichier avec les patterns à supprimer :
+
+    cat > secrets.txt << EOF
+    sk-proj-*
+    gsk_*
+    Forzaitalia02800280
+    EOF
+
+
+3. Nettoyer l'historique :
+
+    cd /home/tahar/project/AMP
+    
+    # Supprimer le fichier .env de tout l'historique
+    bfg --delete-files .env
+    
+    # Supprimer les secrets par pattern
+    bfg --replace-text secrets.txt
+    
+    # Nettoyer définitivement
+    git reflog expire --expire=now --all
+    git gc --prune=now --aggressive
+
+
+4. Vérifier que c'est propre :
+
+    git log --all -S "sk-proj-" --source --all
+    # Devrait être vide
+
+
+5. Pousser sur GitHub :
+
+    git push origin --force --all
+
+
+✅ Historique nettoyé, secrets supprimés
+
+
+🛡️  MÉTHODE 3 : Utiliser git-filter-repo (Moderne, Recommandé)
+═══════════════════════════════════════════════════════════════════════════════
+
+git-filter-repo est l'outil officiel recommandé par Git.
+
+1. Installer git-filter-repo :
+
+    pip install git-filter-repo --break-system-packages
+
+
+2. Supprimer .env de tout l'historique :
+
+    cd /home/tahar/project/AMP
+    git filter-repo --path .env --invert-paths
+
+
+3. Supprimer les secrets par pattern :
+
+    cat > replacements.txt << EOF
+    sk-proj-==>REDACTED_OPENAI_KEY
+    gsk_==>REDACTED_GROQ_KEY
+    Forzaitalia02800280==>REDACTED_PASSWORD
+    EOF
+    
+    git filter-repo --replace-text replacements.txt
+
+
+4. Pousser sur GitHub :
+
+    git remote add origin https://github.com/VOTRE_USERNAME/chatbot-rag-reglements.git
+    git push -u origin main --force
+
+
+✅ Historique nettoyé avec l'outil officiel
+
+
+🔐 APRÈS LE NETTOYAGE : Actions de Sécurité
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ⚠️  RÉVOQUER IMMÉDIATEMENT LES ANCIENNES CLÉS :
+
+   OpenAI : https://platform.openai.com/api-keys
+   → Supprimez la clé sk-proj-XXXXXXXXXXXXXXXX
+
+   Groq : https://console.groq.com/keys
+   → Supprimez la clé gsk_XXXXXXXXXXXXXXXX
+
+   Gmail : https://myaccount.google.com/apppasswords
+   → Supprimez le mot de passe d'application XXXXXXXXXXXXXXXX
+
+
+2. 🔑 GÉNÉRER DE NOUVELLES CLÉS :
+
+   - Créez de nouvelles clés sur les plateformes
+   - Mettez-les dans .env (qui est maintenant dans .gitignore)
+   - NE LES COMMITTEZ JAMAIS
+
+
+3. ✅ VÉRIFIER LE .gitignore :
+
+    cat .gitignore | grep ".env"
+    
+    Doit contenir :
+    .env
+    *.env
+    .env.*
+    !.env.example
+
+
+4. 📧 CHANGER LE MOT DE PASSE EMAIL :
+
+   Si Forzaitalia02800280 était votre vrai mot de passe :
+   → Changez-le immédiatement sur Gmail
+   → Générez un nouveau mot de passe d'application
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+📋 CHECKLIST FINALE AVANT PUBLICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Avant de publier sur GitHub, vérifiez :
+
+□ .env est dans .gitignore
+□ Aucun secret dans l'historique Git (vérifié avec git log)
+□ README.md est prêt (informations personnelles mises à jour)
+□ LICENSE créé
+□ .env.example créé (template sans vraies clés)
+□ Répertoire faiss_index/ est dans .gitignore (trop lourd)
+□ Anciennes clés révoquées si elles étaient dans Git
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+💡 CONSEIL : Utilisation de .env.example
+═══════════════════════════════════════════════════════════════════════════════
+
+Au lieu de commit .env, créez un .env.example :
+
+    # Copier .env vers .env.example
+    cp .env .env.example
+
+    # Remplacer les vraies valeurs par des exemples
+    nano .env.example
+
+Contenu de .env.example :
+
+    # Clé API Groq (gratuit sur https://console.groq.com/keys)
+    GROQ_API_KEY=gsk_YOUR_KEY_HERE
+
+    # Clé API DeepSeek (backup - https://platform.deepseek.com/api_keys)
+    OPENAI_API_KEY=sk-YOUR_KEY_HERE
+
+    # Configuration Email (optionnel)
+    SENDER_EMAIL=your.email@example.com
+    GMAIL_APP_PASSWORD=YOUR_APP_PASSWORD
+    RECEIVER_EMAIL=destination@example.com
+
+Ensuite, commit .env.example :
+
+    git add .env.example
+    git commit -m "Add .env.example template"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+🚨 EN CAS D'URGENCE : Secrets déjà publiés sur GitHub
+═══════════════════════════════════════════════════════════════════════════════
+
+Si vous avez DÉJÀ poussé des secrets sur GitHub :
+
+1. Révoquez IMMÉDIATEMENT toutes les clés
+2. Supprimez le dépôt GitHub
+3. Nettoyez l'historique local (méthodes ci-dessus)
+4. Re-créez un nouveau dépôt GitHub propre
+5. Changez tous vos mots de passe
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Pour plus d'aide : https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
