@@ -1,0 +1,19 @@
+
+# Secrets et credentials (NE JAMAIS COMMITER)
+scrapers/service-account.json
+scrapers/credentials.json
+scrapers/google_session*.json
+scrapers/.browser_state/
+scrapers/token.json
+scrapers/*.pem
+scrapers/*.p12
+
+# Fichiers de debug
+scrapers/debug_page*.html
+
+# Environnement Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
